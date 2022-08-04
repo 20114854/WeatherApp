@@ -16,6 +16,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
@@ -61,7 +62,7 @@ public class weatherFragment extends Fragment
 
             try
             {
-                weatherData = NetworkUtil.getResponseFromHttpUrl(weatherURL);
+                weatherData = NetworkUtil.getResponse(weatherURL);
             }
 
             catch (IOException e)
@@ -108,9 +109,38 @@ public class weatherFragment extends Fragment
                         String date = dailyWeather.getString("Date");
                         Log.i(TAG, "consumeJson: Date" + date);
                         forecastObject.setfDate(date);
+
+                        //GET MIN
+                        JSONObject temperatureObject = dailyWeather.getJSONObject("Temperature");
+                        JSONObject minTempObject = temperatureObject.getJSONObject("Minimum");
+                        String minTemp = minTempObject.getString("Value");
+                        Log.i(TAG, "consumeJson: minTemp" + minTemp);
+                        forecastObject.setfMin(minTemp);
+
+                        //GET MAX
+                        JSONObject maxTempObject = temperatureObject.getJSONObject("Maximum");
+                        String maxTemp = maxTempObject.getString("Value");
+                        Log.i(TAG, "consumeJson: maxTemp" + maxTemp);
+                        forecastObject.setfMax(maxTemp);
+
+                        fiveDayList.add(forecastObject);
+
+                        if (fiveDayList !=null)
+                        {
+                            ForecastAdapter adapter = new ForecastAdapter(getContext(), fiveDayList);
+                            listView.setAdapter(adapter);
+                        }
                     }
+
+                    return fiveDayList;
+                }
+                catch (JSONException e)
+                {
+                    e.printStackTrace();
                 }
             }
+
+            return null;
         }
     }
 

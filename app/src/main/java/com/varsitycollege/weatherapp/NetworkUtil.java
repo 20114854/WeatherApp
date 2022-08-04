@@ -19,7 +19,7 @@ public class NetworkUtil
     private static final String METRIC_VALUE = "true";
     private static final String TAG = "NETWORK_UTIL";
 
-    public static URL buildURL()
+    public static URL buildURLForWeather()
     {
         Uri uri = Uri.parse(BASE_URL)
                 .buildUpon()
